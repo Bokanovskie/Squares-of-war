@@ -41,6 +41,7 @@ class Square extends Component {
         var square = {
             'owner': owner,
             'piece': 1,
+            'initPiece': 1,
             'selected': ' ',
             'buttonSelected': {display: 'none'}
         }
@@ -66,29 +67,34 @@ class Square extends Component {
                 this.forceUpdate()
             }
         }
-
     }
 
-    increasePiece = () => {
+    increasePiece = (index) => {
 
-        const {currentPieceToAssign} = this.props
+        const {currentPieceToAssign, handleUpdatePieceToAssign} = this.props
+        const {squares} = this.state
 
         if(currentPieceToAssign > 0){
+
+            squares[index].piece = squares[index].piece + 1
+            this.forceUpdate()
+
             var value = currentPieceToAssign - 1
-
-            this.props.handleUpdatePieceToAssign(value)
+            handleUpdatePieceToAssign(value)
         }
-
     }
 
-    decreasePiece = () => {
+    decreasePiece = (index) => {
 
-        const {currentPieceToAssign, maxPieceToAssign} = this.props
+        const {currentPieceToAssign, maxPieceToAssign, handleUpdatePieceToAssign} = this.props
+        const {squares} = this.state
 
-        if(currentPieceToAssign < maxPieceToAssign){
+        if(currentPieceToAssign < maxPieceToAssign && squares[index].piece > 1 && squares[index].piece > squares[index].initPiece){
+            squares[index].piece = squares[index].piece - 1
+            this.forceUpdate()
+
             var value = this.props.currentPieceToAssign + 1
-
-            this.props.handleUpdatePieceToAssign(value)
+            handleUpdatePieceToAssign(value)
         }
     }
 
@@ -106,8 +112,8 @@ class Square extends Component {
                     </span>
 
                     <div style={square['buttonSelected']}>
-                        <button onClick={this.increasePiece}>+</button>
-                        <button onClick={this.decreasePiece}>-</button>
+                        <button onClick={this.increasePiece.bind(this, index)}>+</button>
+                        <button onClick={this.decreasePiece.bind(this, index)}>-</button>
                     </div>
                 </div>
             ))}
