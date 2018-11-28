@@ -1,0 +1,7 @@
+.party {
+    font-size: 50px;
+}
+
+.party > .item-party {
+    margin: 0 25px;
+}

@@ -1,0 +1,26 @@
+.square {
+    height: 500px;
+    width: 25%;
+
+    display: inline-block;
+}
+
+.piece {
+    font-size: 2em;
+}
+
+.selected {
+    color: greenyellow;
+}
+
+.buttonSelected{
+    display: block;
+}
+
+.player1 {
+    background-color: red;
+}
+
+.player2 {
+    background-color: blue;
+}
