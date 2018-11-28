@@ -40,7 +40,6 @@ class App extends Component {
               pieceToAssign={this.state.currentPieceToAssign}
 
               handlePartyInfo={this.handlePartyInfo}
-
           />
 
           <Square

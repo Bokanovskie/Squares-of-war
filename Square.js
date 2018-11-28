@@ -13,6 +13,7 @@ class Square extends Component {
     state = {
         squares: this.generateSquares(),
         currentSquare: '',
+        targetSquare: '',
     }
 
     generateSquares() {
@@ -42,7 +43,7 @@ class Square extends Component {
             'owner': owner,
             'piece': 1,
             'initPiece': 1,
-            'selected': ' ',
+            'selected': {},
             'buttonSelected': {display: 'none'}
         }
 
@@ -51,20 +52,53 @@ class Square extends Component {
 
     handleClickSquare = (index) => {
 
-        const {currentSquare, squares} = this.state
+        const {currentSquare, targetSquare, squares} = this.state
+        const {phase} = this.props
 
-        if(this.props.phase === 'Assignment'){
+        if(phase === 'Assignment'){
             if(currentSquare !== index && this.props.currentPlayer === squares[index].owner){
                 if(currentSquare || currentSquare === 0){
-                    squares[currentSquare].selected = ' '
+                    squares[currentSquare].selected = {}
                     squares[currentSquare].buttonSelected = HIDE_STYLE
                 }
 
-                this.state.squares[index].selected = 'selected '
-                this.state.squares[index].buttonSelected = DISPLAY_STYLE
+                squares[index].selected = {color: '#ADFF2F'}
+                squares[index].buttonSelected = DISPLAY_STYLE
                 this.state.currentSquare = index
 
                 this.forceUpdate()
+            }
+        }
+
+        if(this.props.phase === 'Attack'){
+            if(currentSquare !== index && this.props.currentPlayer === squares[index].owner){
+                if(currentSquare || currentSquare === 0){
+                    squares[currentSquare].selected = {}
+
+                    if(targetSquare){
+                        squares[targetSquare].selected = {}
+                        this.state.targetSquare = ''
+                    }
+                }
+
+                this.state.squares[index].selected = {color: '#ADFF2F'}
+                this.state.currentSquare = index
+
+                this.forceUpdate()
+            }
+
+            if(currentSquare){
+                if(targetSquare !== index && this.props.currentPlayer !== squares[index].owner){
+
+                    if(targetSquare || targetSquare === 0){
+                        this.state.squares[targetSquare].selected = {}
+                    }
+
+                    this.state.squares[index].selected = {color: '#0da59f'}
+                    this.state.targetSquare = index
+
+                    this.forceUpdate()
+                }
             }
         }
     }
@@ -103,8 +137,9 @@ class Square extends Component {
 
         return <div>
             { squares.map((square, index) => (
-                <div className={'square '+ square['selected'] + square['owner']}
+                <div className={'square '+ square['owner']}
                      key={index}
+                     style={ square['selected'] }
                      onClick={this.handleClickSquare.bind(this, index)}>
 
                     <span className={'piece'}>

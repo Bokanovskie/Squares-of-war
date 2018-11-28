@@ -7,9 +7,9 @@ class Party extends Component{
     onNextClick = () => {
 
         var partyInfo = {
-            'currentPlayer': 'player2',
+            'currentPlayer': 'player1',
             'phase': 'Attack',
-            'pieceToAssign': 3,
+            'pieceToAssign': 0,
         }
 
         this.props.handlePartyInfo(partyInfo)
