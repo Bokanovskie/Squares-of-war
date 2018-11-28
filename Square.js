@@ -8,6 +8,10 @@ const SIDE = 4
 const DISPLAY_STYLE = {display: 'inline-block'}
 const HIDE_STYLE = {display: 'none'}
 
+const ADJACENT_FIRST = [[1, 4, 5, -4], [1, 3, 4, 5, -1], [1, 3, 4, 5, -1], [3, 4, -1, -4]]
+const ADJACENT_SECOND = [[1, 4, 5, -4], [1, 3, 4, 5, -1, -3, -4, -5], [1, 3, 4, 5, -1, -3, -4, -5], [3, 4, -1, -4]]
+const ADJACENT_THIRD = [[1, 4, 5, -4], [1, -1, -3, -4, -5], [1, -1, -3, -4, -5], [3, 4, -1, -4]]
+
 class Square extends Component {
 
     state = {
@@ -17,24 +21,49 @@ class Square extends Component {
     }
 
     generateSquares() {
-        const result = []
+        const arraySquares = []
         const size = SIDE * SIDE
 
         const players = ['player1', 'player2']
         var i = 1
 
-        while (result.length < size) {
+        while (arraySquares.length < size) {
 
             if(i%2 === 0) {
-                result.push(this.getSquare(players[0]))
+                arraySquares.push(this.getSquare(players[0]))
             }else {
-                result.push(this.getSquare(players[1]))
+                arraySquares.push(this.getSquare(players[1]))
             }
 
             i ++
         }
 
-        return shuffle(result)
+        return this.assignAdjacentSquares(shuffle(arraySquares))
+    }
+
+    assignAdjacentSquares(arraySquares) {
+
+        var count = 0
+
+        for(var i=0; i < arraySquares.length; i++){
+
+            if(i <= 3){
+                arraySquares[i].adjacentSquares = ADJACENT_FIRST[count]
+            }else if(i >= (arraySquares.length - 4)){
+                arraySquares[i].adjacentSquares = ADJACENT_THIRD[count]
+            }else{
+                arraySquares[i].adjacentSquares = ADJACENT_SECOND[count]
+            }
+
+            count ++
+
+            if(count === 4){
+                count = 0
+            }
+        }
+
+        console.log(arraySquares)
+        return arraySquares
     }
 
     getSquare(owner) {
@@ -44,7 +73,7 @@ class Square extends Component {
             'piece': 1,
             'initPiece': 1,
             'selected': {},
-            'buttonSelected': {display: 'none'}
+            'buttonSelected': {display: 'none'},
         }
 
         return square
@@ -87,14 +116,14 @@ class Square extends Component {
                 this.forceUpdate()
             }
 
-            if(currentSquare){
+            if(currentSquare || currentSquare === 0){
                 if(targetSquare !== index && this.props.currentPlayer !== squares[index].owner){
 
                     if(targetSquare || targetSquare === 0){
                         this.state.squares[targetSquare].selected = {}
                     }
 
-                    this.state.squares[index].selected = {color: '#0da59f'}
+                    this.state.squares[index].selected = {color: '#eded10'}
                     this.state.targetSquare = index
 
                     this.forceUpdate()
