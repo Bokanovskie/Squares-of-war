@@ -62,7 +62,6 @@ class Square extends Component {
             }
         }
 
-        console.log(arraySquares)
         return arraySquares
     }
 
@@ -119,17 +118,36 @@ class Square extends Component {
             if(currentSquare || currentSquare === 0){
                 if(targetSquare !== index && this.props.currentPlayer !== squares[index].owner){
 
+                    var possibleSquares = this.getAdjacentSquares()
+
                     if(targetSquare || targetSquare === 0){
                         this.state.squares[targetSquare].selected = {}
                     }
 
-                    this.state.squares[index].selected = {color: '#eded10'}
-                    this.state.targetSquare = index
+                    if(possibleSquares.includes(index)){
+                        this.state.squares[index].selected = {color: '#eded10'}
+                        this.state.targetSquare = index
+                    }
 
                     this.forceUpdate()
                 }
             }
         }
+    }
+
+    getAdjacentSquares() {
+
+        const {squares, currentSquare} = this.state
+
+        var result = []
+        var arrayAdjacentSquares = squares[currentSquare].adjacentSquares
+
+        arrayAdjacentSquares.forEach(adjacentSquareValue => {
+            result.push(currentSquare + adjacentSquareValue)
+        })
+
+        return result
+
     }
 
     increasePiece = (index) => {
