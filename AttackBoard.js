@@ -40,16 +40,24 @@ class AttackBoard extends Component{
                     || result_defender_random[i] === result_attack_random[i]){
                         xCurrentAttackPieces.pop()
                         this.setState({currentAttackPieces: xCurrentAttackPieces.length})
+
+                        if(xCurrentAttackPieces.length === 1){
+                            break
+                        }
+
                 }else{
                     yCurrentDefenderPieces.pop()
                     this.setState({currentDefenderPieces: yCurrentDefenderPieces.length})
+
+                    if(yCurrentDefenderPieces.length === 0){
+                        break
+                    }
                 }
             }
 
             if(xCurrentAttackPieces.length === 1 || yCurrentDefenderPieces.length === 0){
                 break
             }
-
         }
     }
 
@@ -78,7 +86,7 @@ class AttackBoard extends Component{
 
     hideAttackBoard = () => {
 
-        this.props.hideAttackBoard(500, 10)
+        this.props.hideAttackBoard(this.state.currentAttackPieces, this.state.currentDefenderPieces)
     }
 
     render() {
