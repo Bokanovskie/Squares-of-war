@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
+import shuffle from "lodash.shuffle"
 
 import AttackBoard from './AttackBoard'
 
 import './Square.css'
-import shuffle from "lodash.shuffle";
 
 const SIDE = 4
 
@@ -28,7 +28,7 @@ class Square extends Component {
         const size = SIDE * SIDE
 
         const players = ['player1', 'player2']
-        var i = 1
+        let i = 1
 
         while (arraySquares.length < size) {
 
@@ -46,9 +46,9 @@ class Square extends Component {
 
     assignAdjacentSquares(arraySquares) {
 
-        var count = 0
+        let count = 0
 
-        for(var i=0; i < arraySquares.length; i++){
+        for(let i=0; i < arraySquares.length; i++){
 
             if(i <= 3){
                 arraySquares[i].adjacentSquares = ADJACENT_FIRST[count]
@@ -70,7 +70,7 @@ class Square extends Component {
 
     getSquare(owner) {
 
-        var square = {
+        let square = {
             'owner': owner,
             'piece': 2,
             'initPiece': 1,
@@ -146,8 +146,8 @@ class Square extends Component {
 
         const {squares, currentSquare} = this.state
 
-        var result = []
-        var arrayAdjacentSquares = squares[currentSquare].adjacentSquares
+        let result = []
+        let arrayAdjacentSquares = squares[currentSquare].adjacentSquares
 
         arrayAdjacentSquares.forEach(adjacentSquareValue => {
             result.push(currentSquare + adjacentSquareValue)
@@ -181,7 +181,7 @@ class Square extends Component {
             squares[index].piece = squares[index].piece - 1
             this.forceUpdate()
 
-            var value = this.props.currentPieceToAssign + 1
+            let value = this.props.currentPieceToAssign + 1
             handleUpdatePieceToAssign(value)
         }
     }
@@ -192,10 +192,19 @@ class Square extends Component {
 
     hideAttackBoard = (currentPieces, targetPieces) => {
 
-        this.state.squares[this.state.currentSquare].piece = currentPieces
-        this.state.squares[this.state.targetSquare].piece = targetPieces
+        const {squares, currentSquare, targetSquare} = this.state
 
         this.setState({'showAttackBoard': false})
+
+        if(targetPieces === 0){
+            squares[targetSquare].piece = 1
+            squares[currentSquare].piece = currentPieces - 1
+            squares[targetSquare].owner = this.props.currentPlayer
+
+        }else{
+            squares[currentSquare].piece = currentPieces
+            squares[targetSquare].piece = targetPieces
+        }
     }
 
     render() {
@@ -227,6 +236,7 @@ class Square extends Component {
 
                         <button onClick={this.showAttackBoard}>Attack</button>
                     </div>
+
                 </div>
             ))}
         </div>
