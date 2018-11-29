@@ -14,12 +14,7 @@ class AttackBoard extends Component{
         var xCurrentAttackPieces = Array(this.state.currentAttackPieces)
         var yCurrentDefenderPieces = Array(this.state.currentDefenderPieces)
 
-        console.log('------START')
-        console.log(xCurrentAttackPieces.length)
-        console.log(yCurrentDefenderPieces.length)
-
         while(true){
-            console.log('------WHILE START')
 
             var result_attack_random = []
             var result_defender_random = []
@@ -37,23 +32,17 @@ class AttackBoard extends Component{
             result_attack_random.sort().shift()
             result_defender_random.sort()
 
-            console.log('------Random')
-            console.log('------Attack')
-            console.log(result_attack_random.sort())
-            console.log('------Defender')
-            console.log(result_defender_random.sort())
-
             for(var i=0; i < result_attack_random.length; i++){
-                console.log('------Attack Random Start')
+
                 //Si le résultat du défenseur est supérieur ou égale
                 //au résultat de l'attaquant, ce dernier perd un pion
                 if(result_defender_random[i] > result_attack_random[i]
                     || result_defender_random[i] === result_attack_random[i]){
-                    console.log('------Defender win')
                         xCurrentAttackPieces.pop()
+                        this.setState({currentAttackPieces: xCurrentAttackPieces.length})
                 }else{
-                    console.log('------Attack Win')
                     yCurrentDefenderPieces.pop()
+                    this.setState({currentDefenderPieces: yCurrentDefenderPieces.length})
                 }
             }
 
@@ -62,17 +51,6 @@ class AttackBoard extends Component{
             }
 
         }
-
-        console.log('----RESULT')
-        console.log('----Attack')
-        console.log(xCurrentAttackPieces.length)
-        console.log(xCurrentAttackPieces)
-        console.log('----Defender')
-        console.log(yCurrentDefenderPieces.length)
-        console.log(yCurrentDefenderPieces)
-        this.setState({currentAttackPieces: xCurrentAttackPieces.length})
-        this.setState({currentDefenderPieces: yCurrentDefenderPieces.length})
-
     }
 
     increaseAttackPieces = () => {
