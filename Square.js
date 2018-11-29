@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 
+import AttackBoard from './AttackBoard'
+
 import './Square.css'
 import shuffle from "lodash.shuffle";
 
@@ -18,6 +20,7 @@ class Square extends Component {
         squares: this.generateSquares(),
         currentSquare: '',
         targetSquare: '',
+        showAttackBoard: false,
     }
 
     generateSquares() {
@@ -73,6 +76,7 @@ class Square extends Component {
             'initPiece': 1,
             'selected': {},
             'buttonSelected': {display: 'none'},
+            'attackButton': {display: 'none'}
         }
 
         return square
@@ -101,7 +105,9 @@ class Square extends Component {
         if(this.props.phase === 'Attack'){
             if(currentSquare !== index && this.props.currentPlayer === squares[index].owner){
                 if(currentSquare || currentSquare === 0){
+
                     squares[currentSquare].selected = {}
+                    this.state.squares[currentSquare].attackButton = HIDE_STYLE
 
                     if(targetSquare){
                         squares[targetSquare].selected = {}
@@ -127,6 +133,7 @@ class Square extends Component {
                     if(possibleSquares.includes(index)){
                         this.state.squares[index].selected = {color: '#eded10'}
                         this.state.targetSquare = index
+                        this.state.squares[currentSquare].attackButton = {display: 'inline-block'}
                     }
 
                     this.forceUpdate()
@@ -179,6 +186,14 @@ class Square extends Component {
         }
     }
 
+    showAttackBoard = () => {
+        this.setState({'showAttackBoard': true})
+    }
+
+    hideAttackBoard = () => {
+        this.setState({'showAttackBoard': false})
+    }
+
     render() {
         const {squares} = this.state
 
@@ -196,6 +211,15 @@ class Square extends Component {
                     <div style={square['buttonSelected']}>
                         <button onClick={this.increasePiece.bind(this, index)}>+</button>
                         <button onClick={this.decreasePiece.bind(this, index)}>-</button>
+                    </div>
+
+                    <div style={square['attackButton']}>
+                        <AttackBoard
+                            show={this.state.showAttackBoard}
+                            hideAttackBoard={this.hideAttackBoard}
+                        />
+
+                        <button onClick={this.showAttackBoard}>Attack</button>
                     </div>
                 </div>
             ))}
