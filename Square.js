@@ -72,7 +72,7 @@ class Square extends Component {
 
         var square = {
             'owner': owner,
-            'piece': 1,
+            'piece': 2,
             'initPiece': 1,
             'selected': {},
             'buttonSelected': {display: 'none'},
@@ -190,7 +190,11 @@ class Square extends Component {
         this.setState({'showAttackBoard': true})
     }
 
-    hideAttackBoard = () => {
+    hideAttackBoard = (currentPieces, targetPieces) => {
+
+        this.state.squares[this.state.currentSquare].piece = currentPieces
+        this.state.squares[this.state.targetSquare].piece = targetPieces
+
         this.setState({'showAttackBoard': false})
     }
 
@@ -217,6 +221,8 @@ class Square extends Component {
                         <AttackBoard
                             show={this.state.showAttackBoard}
                             hideAttackBoard={this.hideAttackBoard}
+                            attackerPieces={squares[this.state.currentSquare] ? squares[this.state.currentSquare].piece : 0}
+                            defenderPieces={squares[this.state.targetSquare] ? squares[this.state.targetSquare].piece : 0}
                         />
 
                         <button onClick={this.showAttackBoard}>Attack</button>
