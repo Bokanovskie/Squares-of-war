@@ -9,7 +9,7 @@ class App extends Component {
     state = {
         currentPlayer: 'player1',
         phase: 'Assignment',
-        currentPieceToAssign: 3,
+        currentPieceToAssign: 25,
         maxPieceToAssign: 3,
     }
 

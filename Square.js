@@ -15,6 +15,8 @@ const ADJACENT_FIRST = [[1, 4, 5, -4], [1, 3, 4, 5, -1], [1, 3, 4, 5, -1], [3, 4
 const ADJACENT_SECOND = [[1, 4, 5, -4], [1, 3, 4, 5, -1, -3, -4, -5], [1, 3, 4, 5, -1, -3, -4, -5], [3, 4, -1, -4]]
 const ADJACENT_THIRD = [[1, 4, 5, -4], [1, -1, -3, -4, -5], [1, -1, -3, -4, -5], [3, 4, -1, -4]]
 
+const SOLDIER_IMAGE_PATH = '../soldat.png'
+
 class Square extends Component {
 
     state = {
@@ -77,9 +79,17 @@ class Square extends Component {
             'initPiece': 1,
             'selected': {},
             'buttonSelected': {display: 'none'},
-            'attackButton': {display: 'none'}
+            'attackButton': {display: 'none'},
         }
 
+        let arrayImagesPieces = Array()
+
+        for(let i = 0; i < square.piece; i++){
+            arrayImagesPieces.push(SOLDIER_IMAGE_PATH)
+        }
+
+        square.arrayImagesPieces = arrayImagesPieces
+        console.log(square)
         return square
     }
 
@@ -166,9 +176,10 @@ class Square extends Component {
         if(currentPieceToAssign > 0){
 
             squares[index].piece = squares[index].piece + 1
+            squares[index].arrayImagesPieces.push('../soldat.png')
             this.forceUpdate()
 
-            var value = currentPieceToAssign - 1
+            let value = currentPieceToAssign - 1
             handleUpdatePieceToAssign(value)
         }
     }
@@ -180,6 +191,7 @@ class Square extends Component {
 
         if(currentPieceToAssign < maxPieceToAssign && squares[index].piece > 1 && squares[index].piece > squares[index].initPiece){
             squares[index].piece = squares[index].piece - 1
+            squares[index].arrayImagesPieces.pop()
             this.forceUpdate()
 
             let value = this.props.currentPieceToAssign + 1
@@ -245,6 +257,17 @@ class Square extends Component {
                                     <img src={'../attack_btn.png'} className={'attack-btn'}/>
                                 </a>
                             </div>
+                        </div>
+                    </div>
+
+                    <div className={'row'}>
+                        <div>
+                            {square.arrayImagesPieces.map((pieceImage, index) => (
+                                <span key={index}>
+                                <img src={pieceImage} />
+                            </span>
+                            ))}
+
                         </div>
                     </div>
 
