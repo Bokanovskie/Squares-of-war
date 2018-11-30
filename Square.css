@@ -1,8 +1,17 @@
+.board-squares{
+    margin-top: 95px;
+}
+
 .square {
-    height: 500px;
-    width: 25%;
+    /*background-color: saddlebrown;*/
+    height: 450px;
 
     display: inline-block;
+
+    background-image: url(texture_land.svg);
+    background-repeat: no-repeat;
+    background-size: 460px 450px;
+    border-style: inset;
 }
 
 .piece {
@@ -10,11 +19,16 @@
 }
 
 .selected {
+    border-size: 15px;
     color: greenyellow;
 }
 
 .buttonSelected{
     display: block;
+}
+
+.attack-btn{
+    width: 75px;
 }
 
 .player1 {

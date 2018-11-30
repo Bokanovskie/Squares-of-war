@@ -5,9 +5,10 @@ import AttackBoard, {RESULT_WIN} from './AttackBoard'
 
 import './Square.css'
 
-const SIDE = 4
+export const SIDE_X = 4
+export const SIDE_Y = 4
 
-const DISPLAY_STYLE = {display: 'inline-block'}
+const DISPLAY_STYLE = {display: 'block'}
 const HIDE_STYLE = {display: 'none'}
 
 const ADJACENT_FIRST = [[1, 4, 5, -4], [1, 3, 4, 5, -1], [1, 3, 4, 5, -1], [3, 4, -1, -4]]
@@ -25,7 +26,7 @@ class Square extends Component {
 
     generateSquares() {
         const arraySquares = []
-        const size = SIDE * SIDE
+        const size = SIDE_X * SIDE_Y
 
         const players = ['player1', 'player2']
         let i = 1
@@ -50,9 +51,9 @@ class Square extends Component {
 
         for(let i=0; i < arraySquares.length; i++){
 
-            if(i <= 3){
+            if(i <= (SIDE_X - 1)){
                 arraySquares[i].adjacentSquares = ADJACENT_FIRST[count]
-            }else if(i >= (arraySquares.length - 4)){
+            }else if(i >= (arraySquares.length - SIDE_X)){
                 arraySquares[i].adjacentSquares = ADJACENT_THIRD[count]
             }else{
                 arraySquares[i].adjacentSquares = ADJACENT_SECOND[count]
@@ -212,9 +213,9 @@ class Square extends Component {
     render() {
         const {squares} = this.state
 
-        return <div>
+        return <div className={'row board-squares'}>
             { squares.map((square, index) => (
-                <div className={'square '+ square['owner']}
+                <div className={'square col-md-3 '+ square['owner']}
                      key={index}
                      style={ square['selected'] }
                      onClick={this.handleClickSquare.bind(this, index)}>
@@ -223,9 +224,28 @@ class Square extends Component {
                         { square['piece'] }
                     </span>
 
-                    <div style={square['buttonSelected']}>
-                        <button onClick={this.increasePiece.bind(this, index)}>+</button>
-                        <button onClick={this.decreasePiece.bind(this, index)}>-</button>
+                    <div className={'row'}>
+                        <div className={'col-md-1'}>
+                            <div style={square['buttonSelected']}>
+                                <div>
+                                    <a onClick={this.increasePiece.bind(this, index)}>
+                                        <img src='../red_sliderUp.png'/>
+                                    </a>
+                                </div>
+                                <div>
+                                    <a onClick={this.decreasePiece.bind(this, index)} >
+                                        <img src='../red_sliderDown.png' />
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div className={'col-md-6'}>
+                            <div style={square['attackButton']}>
+                                <a href={'#'} onClick={this.showAttackBoard}>
+                                    <img src={'../attack_btn.png'} className={'attack-btn'}/>
+                                </a>
+                            </div>
+                        </div>
                     </div>
 
                     <div style={square['attackButton']}>
@@ -236,8 +256,6 @@ class Square extends Component {
                             defenderPieces={squares[this.state.targetSquare] ? squares[this.state.targetSquare].piece : 0}
 
                         />
-
-                        <button onClick={this.showAttackBoard}>Attack</button>
                     </div>
 
                 </div>

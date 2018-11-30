@@ -15,45 +15,46 @@ class App extends Component {
 
     handlePartyInfo = partyInfo => {
         this.setState(prevState => (
-            {
-                currentPlayer: partyInfo.currentPlayer,
-                phase: partyInfo.phase,
-                currentPieceToAssign: partyInfo.pieceToAssign,
-                maxPieceToAssign: partyInfo.pieceToAssign
-            }
-        )
-    )}
+                {
+                    currentPlayer: partyInfo.currentPlayer,
+                    phase: partyInfo.phase,
+                    currentPieceToAssign: partyInfo.pieceToAssign,
+                    maxPieceToAssign: partyInfo.pieceToAssign
+                }
+            )
+        )}
 
     handleUpdatePieceToAssign = pieceToAssign => {
         this.setState(prevState => ({ currentPieceToAssign: pieceToAssign }))
     }
 
-  render() {
+    render() {
 
-    return (
+        return (
 
-      <div className="board">
+            <div className="board">
 
-          <Party
-              currentPlayer={this.state.currentPlayer}
-              phase={this.state.phase}
-              pieceToAssign={this.state.currentPieceToAssign}
+                <Party
+                    currentPlayer={this.state.currentPlayer}
+                    phase={this.state.phase}
+                    pieceToAssign={this.state.currentPieceToAssign}
 
-              handlePartyInfo={this.handlePartyInfo}
-          />
+                    handlePartyInfo={this.handlePartyInfo}
+                />
 
-          <Square
-            currentPlayer={this.state.currentPlayer}
-            phase={this.state.phase}
-            currentPieceToAssign={this.state.currentPieceToAssign}
-            maxPieceToAssign={this.state.maxPieceToAssign}
+                <div className={'container-fluid'}>
+                    <Square
+                        currentPlayer={this.state.currentPlayer}
+                        phase={this.state.phase}
+                        currentPieceToAssign={this.state.currentPieceToAssign}
+                        maxPieceToAssign={this.state.maxPieceToAssign}
 
-            handleUpdatePieceToAssign={this.handleUpdatePieceToAssign}
-          />
-
-      </div>
-    );
-  }
+                        handleUpdatePieceToAssign={this.handleUpdatePieceToAssign}
+                    />
+                </div>
+            </div>
+        );
+    }
 }
 
 export default App;

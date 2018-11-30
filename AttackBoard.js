@@ -46,11 +46,11 @@ class AttackBoard extends Component{
             let thresholdAttack = 3
             let thresholdDefend = 2
 
-            if(xCurrentAttackPieces.length == 2){
+            if(xCurrentAttackPieces.length === 2){
                 thresholdAttack = 2
             }
 
-            if(yCurrentDefenderPieces.length == 1){
+            if(yCurrentDefenderPieces.length === 1){
                 thresholdDefend = 1
             }
 
@@ -246,68 +246,85 @@ class AttackBoard extends Component{
             resultSession} = this.state
 
         const showHideClassname = show ? 'modal display-block' : 'modal display-none'
-        const showHideAttackInfoDiv = currentAttackPieces !== 0 && attackFinish === false ? 'display-block' : 'display-none'
-        const showHideAttackButtonDiv = attackFinish === false ? 'display-block' : 'display-none'
-        const showHideTransfertDiv = attackFinish && resultSession === RESULT_WIN? 'display-block' : 'display-none'
+        const showHideAttackInfoDiv = currentAttackPieces !== 0 && attackFinish === false ? ' display-block' : ' display-none'
+        const showHideAttackButtonDiv = attackFinish === false ? 'display-block' : ' display-none'
+        const showHideTransfertDiv = attackFinish && resultSession === RESULT_WIN? ' display-block' : ' display-none'
 
         return <div className={showHideClassname}>
             <section className={'modal-main'}>
 
-                {/* Attack information */}
-                <div className={showHideAttackInfoDiv}>
-                    <button onClick={this.attackAction}>Attack</button>
-                    <p>Attacker pieces: {currentAttackPieces}</p>
-                    <p>Defender pieces: {currentDefenderPieces}</p>
-                </div>
-
-                {/* Transfert Block */}
-                <div className={showHideTransfertDiv}>
-                    <h2>Select pieces to transfert</h2>
-                    <p>Current square: {currentAttackPieces}</p>
-                    <p>Target square: {piecesToTransfert}</p>
+                <div className={'modal-content'}>
                     <div>
-                        <button onClick={this.increaseTransfertPieces}>+</button>
-                        <button onClick={this.decreaseTransfertPieces}>-</button>
+                        {/* Bouton de cloture */}
+                        <a href={'#'} onClick={this.hideAttackBoard}>
+                            <img src='../red_cross.png' />
+                        </a>
                     </div>
-                </div>
-                {/* Attack Block */}
-                <div className={showHideAttackButtonDiv}>
-                    <h2>Select pieces to attack</h2>
-                    <div>
-                        <button onClick={this.increaseAttackPieces}>+</button>
-                        <button onClick={this.decreaseAttackPieces}>-</button>
-                    </div>
-                </div>
 
-                {/* Bouton de cloture */}
-                <div>
-                    <button onClick={this.hideAttackBoard}>Validate</button>
-                </div>
+                    <div className={'row'}>
+                        {/* Attack Block */}
+                        <div className={'col-md-6 ' + showHideAttackButtonDiv}>
+                            <h2>Select pieces to attack</h2>
+                            <div>
+                                <button onClick={this.increaseAttackPieces} className={'btn btn-primary'}>+</button>
+                                <button onClick={this.decreaseAttackPieces} className={'btn btn-primary'}>-</button>
+                            </div>
+                        </div>
 
-                {/* Result session block */}
-                <div>
-                    <h2>Party result:</h2>
-                    <div>
-                        {resultSession}
-                    </div>
-                </div>
+                        <div className={'col-md-6'}>
+                            {/* Result session block */}
+                            <div>
+                                <h2>Party result:</h2>
+                                <div>
+                                    {resultSession}
+                                </div>
+                            </div>
 
-                {/* Result dés block */}
-                <div>
-                    Result Attack: {resultsAttack.map((result, index) => (
-                                    <div key={index}>
+                            {/* Result dés block */}
+                            <div>
+                                Result Attack: {resultsAttack.map((result, index) => (
+                                <div key={index}>
                                         <span>
                                             {result}
                                         </span>
-                                    </div>
-                ))}
+                                </div>
+                            ))}
 
-                    Result Defend: {resultsDefend.map((result, index) => (
-                    <div key={index}>
-                        {result}
+                                Result Defend: {resultsDefend.map((result, index) => (
+                                <div key={index}>
+                                    {result}
+                                </div>
+                            ))}
+                            </div>
+                        </div>
                     </div>
-                ))}
+
+                    <div className={'row'} style={{padding: '10px 0'}}>
+                        {/* Transfert Block */}
+                        <div className={'col-md-6' + showHideTransfertDiv}>
+                            <h2>Select pieces to transfert</h2>
+                            <p>Current square: {currentAttackPieces}</p>
+                            <p>Target square: {piecesToTransfert}</p>
+                            <div>
+                                <button onClick={this.increaseTransfertPieces}>+</button>
+                                <button onClick={this.decreaseTransfertPieces}>-</button>
+                            </div>
+                        </div>
+
+                        {/* Attack information */}
+                        <div className={'col-md-6'}>
+                            <div className={showHideAttackInfoDiv}>
+                                <p>Attacker pieces: {currentAttackPieces}</p>
+                                <p>Defender pieces: {currentDefenderPieces}</p>
+
+                                <div>
+                                    <button onClick={this.attackAction}>Attack</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
             </section>
         </div>
     }
