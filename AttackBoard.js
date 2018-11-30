@@ -2,9 +2,6 @@ import React, { Component } from 'react'
 
 import './AttackBoard.css'
 
-const DISPLAY_STYLE = {display: 'inline-block'}
-const HIDE_STYLE = {display: 'none'}
-
 export const RESULT_WIN = 'win'
 export const RESULT_DEFEAT = 'defeat'
 export const RESULT_EQUALITY = 'equality'
@@ -28,12 +25,18 @@ class AttackBoard extends Component{
 
     attackAction = () => {
 
+        const {
+            currentAttackPieces,
+            currentDefenderPieces,
+            resultsAttack,
+            resultsDefend} = this.state
+
         this.setState({restAttackPieces: this.props.attackerPieces})
 
-        let xCurrentAttackPieces = Array(this.state.currentAttackPieces)
-        let yCurrentDefenderPieces = Array(this.state.currentDefenderPieces)
+        let xCurrentAttackPieces = Array(currentAttackPieces)
+        let yCurrentDefenderPieces = Array(currentDefenderPieces)
 
-        let initAttackPiece = this.state.currentAttackPieces
+        let initAttackPiece = currentAttackPieces
 
         while(true){
 
@@ -71,11 +74,12 @@ class AttackBoard extends Component{
 
             result_defender_random.sort()
 
-            this.state.resultsAttack.push(result_attack_random)
-            this.state.resultsDefend.push(result_defender_random)
+            resultsAttack.push(result_attack_random)
+            resultsDefend.push(result_defender_random)
 
             this.forceUpdate()
 
+            // Loop de comparaison des résultats
             for(let i=0; i < result_attack_random.length; i++){
 
                 //Si le résultat du défenseur est supérieur ou égale
