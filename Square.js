@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import shuffle from "lodash.shuffle"
 
-import AttackBoard from './AttackBoard'
+import AttackBoard, {RESULT_WIN} from './AttackBoard'
 
 import './Square.css'
 
@@ -190,20 +190,22 @@ class Square extends Component {
         this.setState({'showAttackBoard': true})
     }
 
-    hideAttackBoard = (currentPieces, targetPieces) => {
-
-        const {squares, currentSquare, targetSquare} = this.state
+    hideAttackBoard = (currentPieces, targetPieces, result) => {
 
         this.setState({'showAttackBoard': false})
 
-        if(targetPieces === 0){
-            squares[targetSquare].piece = 1
-            squares[currentSquare].piece = currentPieces - 1
-            squares[targetSquare].owner = this.props.currentPlayer
+        if(typeof currentPieces !== 'undefined' && typeof targetPieces !== 'undefined'){
 
-        }else{
-            squares[currentSquare].piece = currentPieces
-            squares[targetSquare].piece = targetPieces
+            const {squares, currentSquare, targetSquare} = this.state
+
+            if(result === RESULT_WIN){
+                squares[targetSquare].piece = targetPieces
+                squares[currentSquare].piece = currentPieces
+                squares[targetSquare].owner = this.props.currentPlayer
+            }else{
+                squares[currentSquare].piece = currentPieces
+                squares[targetSquare].piece = targetPieces
+            }
         }
     }
 
@@ -232,6 +234,7 @@ class Square extends Component {
                             hideAttackBoard={this.hideAttackBoard}
                             attackerPieces={squares[this.state.currentSquare] ? squares[this.state.currentSquare].piece : 0}
                             defenderPieces={squares[this.state.targetSquare] ? squares[this.state.targetSquare].piece : 0}
+
                         />
 
                         <button onClick={this.showAttackBoard}>Attack</button>
