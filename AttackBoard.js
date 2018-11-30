@@ -104,18 +104,36 @@ class AttackBoard extends Component{
             }
         }
 
+        // Calcul du nombre de pièce restantes
+        let computedRestPices = this.props.attackerPieces - (initAttackPiece - xCurrentAttackPieces.length)
+
         // Si l'attaquant gagne affiche automatiquement le tableau de transfert de pion
         if(xCurrentAttackPieces.length > 1 && yCurrentDefenderPieces.length === 0){
             this.setState({
                 restAttackPieces: this.state.restAttackPieces - 1,
+                currentAttackPieces: computedRestPices - 1,
                 piecesToTransfert: 1,
                 attackFinish: true,
                 resultSession: RESULT_WIN
 
             })
+        }else if(xCurrentAttackPieces.length === 1 && yCurrentDefenderPieces.length === 1){
+            this.setState({
+                restAttackPieces: computedRestPices,
+                attackFinish: true,
+                resultSession: RESULT_EQUALITY
+
+            })
+        }else if(xCurrentAttackPieces.length === 1 && yCurrentDefenderPieces.length >= 1){
+            this.setState({
+                restAttackPieces: computedRestPices,
+                attackFinish: true,
+                resultSession: RESULT_DEFEAT
+
+            })
         }
 
-        this.setState({restAttackPieces: this.props.attackerPieces - (initAttackPiece - xCurrentAttackPieces.length)})
+        this.setState({restAttackPieces: computedRestPices})
     }
 
     increaseAttackPieces = () => {
@@ -144,27 +162,56 @@ class AttackBoard extends Component{
     increaseTransfertPieces = () => {
         const {piecesToTransfert, restAttackPieces, currentAttackPieces} = this.state
 
-        if(piecesToTransfert < restAttackPieces){
-            this.setState({piecesToTransfert: piecesToTransfert + 1, currentAttackPieces: currentAttackPieces - 1})
+        if(piecesToTransfert < restAttackPieces && currentAttackPieces > 1){
+            this.setState({
+                piecesToTransfert: piecesToTransfert + 1,
+                currentAttackPieces: currentAttackPieces - 1
+            })
         }
     }
 
     decreaseTransfertPieces = () => {
         const {piecesToTransfert, currentAttackPieces} = this.state
 
-        if(piecesToTransfert > 1){
-            this.setState({piecesToTransfert: piecesToTransfert - 1, currentAttackPieces: currentAttackPieces + 1})
+        if(piecesToTransfert > 1 && piecesToTransfert > 0){
+            this.setState({
+                piecesToTransfert: piecesToTransfert - 1,
+                currentAttackPieces: currentAttackPieces + 1
+            })
         }
     }
 
     hideAttackBoard = () => {
 
-        if(this.state.attackFinish){
-            this.props.hideAttackBoard(
-                this.state.currentAttackPieces,
-                this.state.piecesToTransfert,
-                this.state.resultSession
-            )
+        const {
+            attackFinish,
+            resultSession,
+            currentAttackPieces,
+            piecesToTransfert,
+            currentDefenderPieces} = this.state
+
+        if(attackFinish){
+            if(resultSession === RESULT_WIN){
+                this.props.hideAttackBoard(
+                    currentAttackPieces,
+                    piecesToTransfert,
+                    resultSession
+                )
+            }
+            else if(resultSession === RESULT_EQUALITY){
+                this.props.hideAttackBoard(
+                    currentAttackPieces,
+                    currentDefenderPieces,
+                    resultSession
+                )
+            }
+            else if(resultSession === RESULT_DEFEAT){
+                this.props.hideAttackBoard(
+                    currentAttackPieces,
+                    currentDefenderPieces,
+                    resultSession
+                )
+            }
 
             this.setState(
                 {
@@ -176,7 +223,8 @@ class AttackBoard extends Component{
                     attackFinish: false,
                 }
             )
-        }else{
+        }
+        else{
             this.props.hideAttackBoard()
         }
     }
@@ -187,16 +235,16 @@ class AttackBoard extends Component{
         const {
             currentAttackPieces,
             currentDefenderPieces,
-            restAttackPieces,
             resultsAttack,
             resultsDefend,
             attackFinish,
-            piecesToTransfert} = this.state
+            piecesToTransfert,
+            resultSession} = this.state
 
         const showHideClassname = show ? 'modal display-block' : 'modal display-none'
         const showHideAttackInfoDiv = currentAttackPieces !== 0 && attackFinish === false ? 'display-block' : 'display-none'
         const showHideAttackButtonDiv = attackFinish === false ? 'display-block' : 'display-none'
-        const showHideTransfertDiv = attackFinish ? 'display-block' : 'display-none'
+        const showHideTransfertDiv = attackFinish && resultSession === RESULT_WIN? 'display-block' : 'display-none'
 
         return <div className={showHideClassname}>
             <section className={'modal-main'}>
@@ -232,7 +280,15 @@ class AttackBoard extends Component{
                     <button onClick={this.hideAttackBoard}>Validate</button>
                 </div>
 
-                {/* Result block */}
+                {/* Result session block */}
+                <div>
+                    <h2>Party result:</h2>
+                    <div>
+                        {resultSession}
+                    </div>
+                </div>
+
+                {/* Result dés block */}
                 <div>
                     Result Attack: {resultsAttack.map((result, index) => (
                                     <div key={index}>
