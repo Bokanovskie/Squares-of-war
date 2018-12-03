@@ -4,6 +4,7 @@ import shuffle from "lodash.shuffle"
 import AttackBoard, {RESULT_WIN} from './AttackBoard'
 
 import './Square.css'
+import {PHASES} from "./Party";
 
 export const SIDE_X = 4
 export const SIDE_Y = 4
@@ -24,6 +25,14 @@ class Square extends Component {
         currentSquare: '',
         targetSquare: '',
         showAttackBoard: false,
+    }
+
+    componentDidMount(){
+        this.props.onRef(this)
+    }
+
+    componentWillUnmount(){
+        this.props.onRef(undefined)
     }
 
     generateSquares() {
@@ -106,10 +115,10 @@ class Square extends Component {
 
     handleClickSquare = (index) => {
 
-        const {currentSquare, targetSquare, squares} = this.state
+        const {currentSquare, targetSquare, squares, handleSquares} = this.state
         const {phase} = this.props
 
-        if(phase === 'Assignment'){
+        if(phase === PHASES[0]){
             if(currentSquare !== index && this.props.currentPlayer === squares[index].owner){
                 if(currentSquare || currentSquare === 0){
                     squares[currentSquare].selected = {}
@@ -124,7 +133,7 @@ class Square extends Component {
             }
         }
 
-        if(this.props.phase === 'Attack'){
+        if(this.props.phase === PHASES[1]){
             if(currentSquare !== index && this.props.currentPlayer === squares[index].owner){
                 if(currentSquare || currentSquare === 0){
 
@@ -182,7 +191,7 @@ class Square extends Component {
     increasePiece = (index) => {
 
         const {currentPieceToAssign, handleUpdatePieceToAssign, handleSquares} = this.props
-        const {squares} = this.state
+        const {squares, currentSquare} = this.state
 
         if(currentPieceToAssign > 0){
 
@@ -199,7 +208,7 @@ class Square extends Component {
     decreasePiece = (index) => {
 
         const {currentPieceToAssign, maxPieceToAssign, handleUpdatePieceToAssign, handleSquares} = this.props
-        const {squares} = this.state
+        const {squares, currentSquare} = this.state
 
         if(currentPieceToAssign < maxPieceToAssign && squares[index].piece > 1 && squares[index].piece > squares[index].initPiece){
             squares[index].piece = squares[index].piece - 1
@@ -237,6 +246,24 @@ class Square extends Component {
         this.props.handleSquares(squares)
     }
 
+    cleanSquare() {
+
+        const {squares, currentSquare, targetSquare} = this.state
+
+        if(currentSquare){
+            squares[currentSquare].selected = {}
+            squares[currentSquare].buttonSelected = HIDE_STYLE
+            squares[currentSquare].attackButton = HIDE_STYLE
+
+            this.setState({currentSquare: undefined})
+        }
+
+        if(targetSquare){
+            squares[targetSquare].selected = {}
+            this.setState({targetSquare: undefined})
+        }
+    }
+
     render() {
         const {squares} = this.state
 
@@ -266,12 +293,12 @@ class Square extends Component {
                         <div className={'col-md-1'}>
                             <div style={square['buttonSelected']}>
                                 <div>
-                                    <a href={'#'} onClick={this.increasePiece.bind(this, index)}>
+                                    <a onClick={this.increasePiece.bind(this, index)}>
                                         <img src='../red_sliderUp.png'/>
                                     </a>
                                 </div>
                                 <div>
-                                    <a href={'#'} onClick={this.decreasePiece.bind(this, index)} >
+                                    <a onClick={this.decreasePiece.bind(this, index)} >
                                         <img src='../red_sliderDown.png' />
                                     </a>
                                 </div>
@@ -279,7 +306,7 @@ class Square extends Component {
                         </div>
                         <div className={'col-md-6'}>
                             <div style={square['attackButton']}>
-                                <a href={'#'} onClick={this.showAttackBoard}>
+                                <a  onClick={this.showAttackBoard}>
                                     <img src={'../attack_btn.png'} className={'attack-btn'}/>
                                 </a>
                             </div>

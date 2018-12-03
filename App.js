@@ -8,17 +8,23 @@ class App extends Component {
 
     constructor(props){
         super(props)
+        this.child = React.createRef()
     }
+
     state = {
         maxPieceToAssign: 3,
         squares: [],
+        currentSquare: undefined,
     }
 
-    handleSquares = squares => {
+    handleSquares = (squares) => {
         this.setState({squares: squares})
     }
 
     handlePartyInfo = partyInfo => {
+
+        this.child.cleanSquare()
+
         this.setState(prevState => (
                 {
                     currentPlayer: partyInfo.currentPlayer,
@@ -50,6 +56,8 @@ class App extends Component {
 
                 <div className={'container-fluid'}>
                     <Square
+                        onRef={ref => (this.child = ref)}
+
                         currentPlayer={this.state.currentPlayer}
                         phase={this.state.phase}
                         currentPieceToAssign={this.state.currentPieceToAssign}
@@ -57,6 +65,7 @@ class App extends Component {
 
                         handleUpdatePieceToAssign={this.handleUpdatePieceToAssign}
                         handleSquares={this.handleSquares}
+                        cleanSquare={this.cleanSquare}
                     />
                 </div>
             </div>

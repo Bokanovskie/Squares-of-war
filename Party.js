@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 
 import './Party.css'
 
-const PHASES = ['Assignment', 'Attack', 'Transfert']
+export const PHASES = ['Assignment', 'Attack', 'Transfert']
+export const BASIC_REGEN = 3
 
 class Party extends Component{
 
@@ -39,7 +40,18 @@ class Party extends Component{
     }
 
     computePiecesToAssign(){
+        const {showStart} = this.state
 
+        if(showStart){
+            return BASIC_REGEN
+        }
+
+
+        if(this.state.phase_index !== 0){
+            return
+        }
+
+        return BASIC_REGEN
     }
 
     render() {

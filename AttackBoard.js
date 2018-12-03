@@ -257,7 +257,7 @@ class AttackBoard extends Component{
                 <div className={'modal-content'}>
                     <div>
                         {/* Bouton de cloture */}
-                        <a href={'#'} onClick={this.hideAttackBoard} className={showCloseButton}>
+                        <a onClick={this.hideAttackBoard} className={showCloseButton}>
                             <img src='../red_cross.png' />
                         </a>
                     </div>
