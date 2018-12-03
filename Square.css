@@ -3,15 +3,21 @@
 }
 
 .square {
-    /*background-color: saddlebrown;*/
     height: 450px;
 
     display: inline-block;
 
-    background-image: url(texture_land.svg);
     background-repeat: no-repeat;
     background-size: 460px 450px;
     border-style: inset;
+}
+
+.land{
+    background-image: url('green_land_base.png');
+}
+
+.house{
+    background-image: url('house_land.png');
 }
 
 .piece {

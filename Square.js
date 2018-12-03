@@ -16,7 +16,10 @@ const ADJACENT_FIRST = [[1, 4, 5, -4], [1, 3, 4, 5, -1], [1, 3, 4, 5, -1], [3, 4
 const ADJACENT_SECOND = [[1, 4, 5, -4], [1, 3, 4, 5, -1, -3, -4, -5], [1, 3, 4, 5, -1, -3, -4, -5], [3, 4, -1, -4]]
 const ADJACENT_THIRD = [[1, 4, 5, -4], [1, -1, -3, -4, -5], [1, -1, -3, -4, -5], [3, 4, -1, -4]]
 
-const SOLDIER_IMAGE_PATH = '../soldat.png'
+const SOLDIER_PATH = {
+    'player1': '../soldat_red.png',
+    'player2': '../soldat_blue.png',
+}
 
 class Square extends Component {
 
@@ -43,6 +46,10 @@ class Square extends Component {
         let i = 1
 
         while (arraySquares.length < size) {
+
+            if(i === 1 || i === 2){
+                arraySquares.push(this.getSquare())
+            }
 
             if(i%2 === 0) {
                 arraySquares.push(this.getSquare(players[0]))
@@ -87,27 +94,32 @@ class Square extends Component {
     getSquare(owner) {
 
         let square = {
-            'owner': owner,
             'piece': 2,
             'initPiece': 1,
             'selected': {},
             'buttonSelected': {display: 'none'},
             'attackButton': {display: 'none'},
+            'typeLand': 'house'
         }
 
-        let arrayImagesPieces = this.getArrayImagesPieces(square.piece)
+        if(owner){
+            square['owner'] = owner
+            square['typeLand'] = 'land'
+        }
+
+        let arrayImagesPieces = this.getArrayImagesPieces(square.piece, owner)
 
         square.arrayImagesPieces = arrayImagesPieces
 
         return square
     }
 
-    getArrayImagesPieces(numberSprits) {
+    getArrayImagesPieces(numberSprits, owner) {
 
         const arrayImagesPieces = Array()
 
         for(let i = 0; i < numberSprits; i++){
-            arrayImagesPieces.push(SOLDIER_IMAGE_PATH)
+            arrayImagesPieces.push(SOLDIER_PATH[owner])
         }
 
         return arrayImagesPieces
@@ -196,7 +208,7 @@ class Square extends Component {
         if(currentPieceToAssign > 0){
 
             squares[index].piece = squares[index].piece + 1
-            squares[index].arrayImagesPieces.push('../soldat.png')
+            squares[index].arrayImagesPieces.push(SOLDIER_PATH[squares[index].owner])
             this.forceUpdate()
 
             let value = currentPieceToAssign - 1
@@ -232,15 +244,16 @@ class Square extends Component {
 
         if(typeof currentPieces !== 'undefined' && typeof targetPieces !== 'undefined'){
 
-            squares[targetSquare].piece = targetPieces
-            squares[currentSquare].piece = currentPieces
-
-            squares[targetSquare].arrayImagesPieces = this.getArrayImagesPieces(targetPieces)
-            squares[currentSquare].arrayImagesPieces = this.getArrayImagesPieces(currentPieces)
-
             if(result === RESULT_WIN){
                 squares[targetSquare].owner = this.props.currentPlayer
             }
+
+            squares[targetSquare].piece = targetPieces
+            squares[currentSquare].piece = currentPieces
+
+            squares[targetSquare].arrayImagesPieces = this.getArrayImagesPieces(targetPieces, squares[targetSquare].owner)
+            squares[currentSquare].arrayImagesPieces = this.getArrayImagesPieces(currentPieces, squares[currentSquare].owner)
+
         }
 
         this.props.handleSquares(squares)
@@ -269,7 +282,7 @@ class Square extends Component {
 
         return <div className={'row board-squares'}>
             { squares.map((square, index) => (
-                <div className={'square col-md-3 '+ square['owner']}
+                <div className={'square col-md-3 '+ square['owner'] + ' ' + square['typeLand']}
                      key={index}
                      style={ square['selected'] }
                      onClick={this.handleClickSquare.bind(this, index)}>
@@ -319,10 +332,8 @@ class Square extends Component {
                             hideAttackBoard={this.hideAttackBoard}
                             attackerPieces={squares[this.state.currentSquare] ? squares[this.state.currentSquare].piece : 0}
                             defenderPieces={squares[this.state.targetSquare] ? squares[this.state.targetSquare].piece : 0}
-
                         />
                     </div>
-
                 </div>
             ))}
         </div>

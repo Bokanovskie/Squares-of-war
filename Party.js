@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import './Party.css'
 
 export const PHASES = ['Assignment', 'Attack', 'Transfert']
+export const PLAYERS = ['player1', 'player2']
 export const BASIC_REGEN = 3
 
 class Party extends Component{
@@ -40,18 +41,37 @@ class Party extends Component{
     }
 
     computePiecesToAssign(){
-        const {showStart} = this.state
+        const {showStart, player_index} = this.state
+        const {squares} = this.props
 
-        if(showStart){
-            return BASIC_REGEN
-        }
-
+        let countSquares = 0
+        let regen = BASIC_REGEN
 
         if(this.state.phase_index !== 0){
             return
         }
 
-        return BASIC_REGEN
+        if(showStart){
+            return BASIC_REGEN
+        }
+
+        squares.forEach(function (element) {
+            if(element.owner === PLAYERS[player_index]){
+                countSquares ++
+            }
+        })
+
+        if(8 < countSquares && countSquares <= 10){
+            regen = regen + 1
+        }else if(10 < countSquares && countSquares <= 12){
+            regen = regen + 2
+        }else if(12 < countSquares && countSquares <= 14){
+            regen = regen + 3
+        }else if(14 < countSquares && countSquares <= 16){
+            regen = regen + 4
+        }
+
+        return regen
     }
 
     render() {
