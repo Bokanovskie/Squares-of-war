@@ -6,11 +6,16 @@ import Party from "./Party";
 
 class App extends Component {
 
+    constructor(props){
+        super(props)
+    }
     state = {
-        currentPlayer: 'player1',
-        phase: 'Assignment',
-        currentPieceToAssign: 25,
         maxPieceToAssign: 3,
+        squares: [],
+    }
+
+    handleSquares = squares => {
+        this.setState({squares: squares})
     }
 
     handlePartyInfo = partyInfo => {
@@ -38,6 +43,7 @@ class App extends Component {
                     currentPlayer={this.state.currentPlayer}
                     phase={this.state.phase}
                     pieceToAssign={this.state.currentPieceToAssign}
+                    squares={this.state.squares}
 
                     handlePartyInfo={this.handlePartyInfo}
                 />
@@ -50,6 +56,7 @@ class App extends Component {
                         maxPieceToAssign={this.state.maxPieceToAssign}
 
                         handleUpdatePieceToAssign={this.handleUpdatePieceToAssign}
+                        handleSquares={this.handleSquares}
                     />
                 </div>
             </div>

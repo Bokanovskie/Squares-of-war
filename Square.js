@@ -27,7 +27,7 @@ class Square extends Component {
     }
 
     generateSquares() {
-        const arraySquares = []
+        let arraySquares = []
         const size = SIDE_X * SIDE_Y
 
         const players = ['player1', 'player2']
@@ -44,7 +44,11 @@ class Square extends Component {
             i ++
         }
 
-        return this.assignAdjacentSquares(shuffle(arraySquares))
+        arraySquares = shuffle(arraySquares)
+
+        this.props.handleSquares(arraySquares)
+
+        return this.assignAdjacentSquares(arraySquares)
     }
 
     assignAdjacentSquares(arraySquares) {
@@ -82,15 +86,22 @@ class Square extends Component {
             'attackButton': {display: 'none'},
         }
 
-        let arrayImagesPieces = Array()
+        let arrayImagesPieces = this.getArrayImagesPieces(square.piece)
 
-        for(let i = 0; i < square.piece; i++){
+        square.arrayImagesPieces = arrayImagesPieces
+
+        return square
+    }
+
+    getArrayImagesPieces(numberSprits) {
+
+        const arrayImagesPieces = Array()
+
+        for(let i = 0; i < numberSprits; i++){
             arrayImagesPieces.push(SOLDIER_IMAGE_PATH)
         }
 
-        square.arrayImagesPieces = arrayImagesPieces
-        console.log(square)
-        return square
+        return arrayImagesPieces
     }
 
     handleClickSquare = (index) => {
@@ -170,7 +181,7 @@ class Square extends Component {
 
     increasePiece = (index) => {
 
-        const {currentPieceToAssign, handleUpdatePieceToAssign} = this.props
+        const {currentPieceToAssign, handleUpdatePieceToAssign, handleSquares} = this.props
         const {squares} = this.state
 
         if(currentPieceToAssign > 0){
@@ -181,12 +192,13 @@ class Square extends Component {
 
             let value = currentPieceToAssign - 1
             handleUpdatePieceToAssign(value)
+            handleSquares(squares)
         }
     }
 
     decreasePiece = (index) => {
 
-        const {currentPieceToAssign, maxPieceToAssign, handleUpdatePieceToAssign} = this.props
+        const {currentPieceToAssign, maxPieceToAssign, handleUpdatePieceToAssign, handleSquares} = this.props
         const {squares} = this.state
 
         if(currentPieceToAssign < maxPieceToAssign && squares[index].piece > 1 && squares[index].piece > squares[index].initPiece){
@@ -196,6 +208,7 @@ class Square extends Component {
 
             let value = this.props.currentPieceToAssign + 1
             handleUpdatePieceToAssign(value)
+            handleSquares(squares)
         }
     }
 
@@ -205,21 +218,23 @@ class Square extends Component {
 
     hideAttackBoard = (currentPieces, targetPieces, result) => {
 
+        const {squares, currentSquare, targetSquare} = this.state
         this.setState({'showAttackBoard': false})
 
         if(typeof currentPieces !== 'undefined' && typeof targetPieces !== 'undefined'){
 
-            const {squares, currentSquare, targetSquare} = this.state
+            squares[targetSquare].piece = targetPieces
+            squares[currentSquare].piece = currentPieces
+
+            squares[targetSquare].arrayImagesPieces = this.getArrayImagesPieces(targetPieces)
+            squares[currentSquare].arrayImagesPieces = this.getArrayImagesPieces(currentPieces)
 
             if(result === RESULT_WIN){
-                squares[targetSquare].piece = targetPieces
-                squares[currentSquare].piece = currentPieces
                 squares[targetSquare].owner = this.props.currentPlayer
-            }else{
-                squares[currentSquare].piece = currentPieces
-                squares[targetSquare].piece = targetPieces
             }
         }
+
+        this.props.handleSquares(squares)
     }
 
     render() {
@@ -237,15 +252,26 @@ class Square extends Component {
                     </span>
 
                     <div className={'row'}>
+                        <div>
+                            {square.arrayImagesPieces.map((pieceImage, index) => (
+                                <span key={index}>
+                                <img src={pieceImage} />
+                            </span>
+                            ))}
+
+                        </div>
+                    </div>
+
+                    <div className={'row'}>
                         <div className={'col-md-1'}>
                             <div style={square['buttonSelected']}>
                                 <div>
-                                    <a onClick={this.increasePiece.bind(this, index)}>
+                                    <a href={'#'} onClick={this.increasePiece.bind(this, index)}>
                                         <img src='../red_sliderUp.png'/>
                                     </a>
                                 </div>
                                 <div>
-                                    <a onClick={this.decreasePiece.bind(this, index)} >
+                                    <a href={'#'} onClick={this.decreasePiece.bind(this, index)} >
                                         <img src='../red_sliderDown.png' />
                                     </a>
                                 </div>
@@ -257,17 +283,6 @@ class Square extends Component {
                                     <img src={'../attack_btn.png'} className={'attack-btn'}/>
                                 </a>
                             </div>
-                        </div>
-                    </div>
-
-                    <div className={'row'}>
-                        <div>
-                            {square.arrayImagesPieces.map((pieceImage, index) => (
-                                <span key={index}>
-                                <img src={pieceImage} />
-                            </span>
-                            ))}
-
                         </div>
                     </div>
 

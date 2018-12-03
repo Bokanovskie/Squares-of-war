@@ -246,9 +246,10 @@ class AttackBoard extends Component{
             resultSession} = this.state
 
         const showHideClassname = show ? 'modal display-block' : 'modal display-none'
-        const showHideAttackInfoDiv = currentAttackPieces !== 0 && attackFinish === false ? ' display-block' : ' display-none'
+        const showHideAttackInfoDiv = attackFinish === false ? ' display-block' : ' display-none'
         const showHideAttackButtonDiv = attackFinish === false ? 'display-block' : ' display-none'
-        const showHideTransfertDiv = attackFinish && resultSession === RESULT_WIN? ' display-block' : ' display-none'
+        const showHideTransfertDiv = attackFinish && resultSession === RESULT_WIN ? ' display-block' : ' display-none'
+        const showCloseButton = attackFinish === false || attackFinish && resultSession !== RESULT_WIN ? ' display-block' : ' display-none'
 
         return <div className={showHideClassname}>
             <section className={'modal-main'}>
@@ -256,7 +257,7 @@ class AttackBoard extends Component{
                 <div className={'modal-content'}>
                     <div>
                         {/* Bouton de cloture */}
-                        <a href={'#'} onClick={this.hideAttackBoard}>
+                        <a href={'#'} onClick={this.hideAttackBoard} className={showCloseButton}>
                             <img src='../red_cross.png' />
                         </a>
                     </div>
@@ -283,18 +284,18 @@ class AttackBoard extends Component{
                             {/* Result dés block */}
                             <div>
                                 Result Attack: {resultsAttack.map((result, index) => (
-                                <div key={index}>
+                                    <div key={index}>
                                         <span>
                                             {result}
                                         </span>
-                                </div>
-                            ))}
+                                    </div>
+                                ))}
 
                                 Result Defend: {resultsDefend.map((result, index) => (
-                                <div key={index}>
-                                    {result}
-                                </div>
-                            ))}
+                                    <div key={index}>
+                                        {result}
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     </div>
@@ -309,6 +310,8 @@ class AttackBoard extends Component{
                                 <button onClick={this.increaseTransfertPieces}>+</button>
                                 <button onClick={this.decreaseTransfertPieces}>-</button>
                             </div>
+
+                            <button onClick={this.hideAttackBoard} className={showHideTransfertDiv}>Validate</button>
                         </div>
 
                         {/* Attack information */}
